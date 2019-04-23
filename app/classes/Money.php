@@ -8,7 +8,8 @@ class Money
 
     public function equals(Money $money)
     {
-        return $this->amount == $money->amount;
+        return $this->amount == $money->amount
+            && get_class($this) == get_class($money);
     }
 
     public function dollar($amount)
