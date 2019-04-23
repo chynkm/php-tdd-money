@@ -2,10 +2,10 @@
 
 namespace App\Classes;
 
-class Dollar
-{
-    private $amount;
+use App\Classes\Money;
 
+class Dollar extends Money
+{
     public function __construct($amount)
     {
         $this->amount = $amount;
@@ -15,10 +15,4 @@ class Dollar
     {
         return new Dollar($this->amount * $multiplier);
     }
-
-    public function equals($dollar)
-    {
-        return $this->amount == $dollar->amount;
-    }
 }
-
