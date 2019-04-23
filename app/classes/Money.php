@@ -2,7 +2,10 @@
 
 namespace App\Classes;
 
-class Money
+use App\Classes\Dollar;
+use App\Classes\Franc;
+
+abstract class Money
 {
     protected $amount;
 
@@ -12,9 +15,15 @@ class Money
             && get_class($this) == get_class($money);
     }
 
-    public function dollar($amount)
+    public static function dollar($amount)
     {
-        $this->amount = $amount;
         return new Dollar($amount);
     }
+
+    public static function franc($amount)
+    {
+        return new Franc($amount);
+    }
+
+    abstract function times($multiplier);
 }
