@@ -15,9 +15,4 @@ class Dollar extends Money
     {
         return Money::dollar($this->amount * $multiplier);
     }
-
-    public function currency()
-    {
-        return $this->currency;
-    }
 }
