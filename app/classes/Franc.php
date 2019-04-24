@@ -6,14 +6,19 @@ use App\Classes\Money;
 
 class Franc extends Money
 {
-    public function __construct($amount)
+    public function __construct($amount, $currency)
     {
-        $this->amount = $amount;
+        parent::__construct($amount, $currency);
     }
 
     public function times($multiplier)
     {
-        return new Franc($this->amount * $multiplier);
+        return Money::franc($this->amount * $multiplier);
+    }
+
+    public function currency()
+    {
+        return $this->currency;
     }
 }
 

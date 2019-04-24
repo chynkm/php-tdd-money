@@ -6,13 +6,18 @@ use App\Classes\Money;
 
 class Dollar extends Money
 {
-    public function __construct($amount)
+    public function __construct($amount, $currency)
     {
-        $this->amount = $amount;
+        parent::__construct($amount, $currency);
     }
 
     public function times($multiplier)
     {
-        return new Dollar($this->amount * $multiplier);
+        return Money::dollar($this->amount * $multiplier);
+    }
+
+    public function currency()
+    {
+        return $this->currency;
     }
 }

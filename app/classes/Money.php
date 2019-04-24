@@ -7,7 +7,13 @@ use App\Classes\Franc;
 
 abstract class Money
 {
-    protected $amount;
+    protected $amount, $currency;
+
+    public function __construct($amount, $currency)
+    {
+        $this->amount = $amount;
+        $this->currency = $currency;
+    }
 
     public function equals(Money $money)
     {
@@ -17,13 +23,18 @@ abstract class Money
 
     public static function dollar($amount)
     {
-        return new Dollar($amount);
+        return new Dollar($amount, 'USD');
     }
 
     public static function franc($amount)
     {
-        return new Franc($amount);
+        return new Franc($amount, 'CHF');
     }
 
     abstract function times($multiplier);
+
+    public function currency()
+    {
+        return $this->currency;
+    }
 }
