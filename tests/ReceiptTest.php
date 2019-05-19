@@ -19,16 +19,27 @@ class ReceiptTest extends TestCase
         unset($this->receipt);
     }
 
-    public function testTotal()
+    /**
+     * @dataProvider provideTotal
+     */
+    public function testTotal($items, $expected)
     {
-        $input = [0, 2, 5, 8];
         $coupon = null;
-        $output = $this->receipt->total($input, $coupon);
+        $output = $this->receipt->total($items, $coupon);
         $this->assertEquals(
-            15,
+            $expected,
             $output,
-            'Total sum should be 15'
+            "Total sum should be {$expected}"
         );
+    }
+
+    public function provideTotal()
+    {
+        return [
+            [[1, 2, 5, 8], 16],
+            [[-1, 2, 5, 8], 14],
+            [[1, 2, 8], 11],
+        ];
     }
 
     public function testTotalAndCoupon()
@@ -77,6 +88,5 @@ class ReceiptTest extends TestCase
             $output,
             'tax calculate = 1.00'
         );
-
     }
 }
