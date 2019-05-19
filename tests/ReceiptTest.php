@@ -29,4 +29,18 @@ class ReceiptTest extends TestCase
             'Total sum should be 15'
         );
     }
+
+    public function testTax()
+    {
+        $inputAmount = 10.00;
+        $taxInput = 0.10;
+
+        $output = $this->receipt->tax($inputAmount, $taxInput);
+        $this->assertEquals(
+            1.00,
+            $output,
+            'tax calculate = 1.00'
+        );
+
+    }
 }
