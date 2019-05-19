@@ -34,4 +34,9 @@ class Receipt
 
         return $subTotal + $this->tax($subTotal, $tax);
     }
+
+    public function currencyAmt($input)
+    {
+        return round($input, 2);
+    }
 }
