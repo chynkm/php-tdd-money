@@ -2,6 +2,7 @@
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/6.0/phpunit.xsd"
          backupGlobals="false"
+         colors="true"
          verbose="true">
     <testsuite name="default">
         <directory suffix="Test.php">tests</directory>

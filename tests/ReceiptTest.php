@@ -22,9 +22,22 @@ class ReceiptTest extends TestCase
     public function testTotal()
     {
         $input = [0, 2, 5, 8];
-        $output = $this->receipt->total($input);
+        $coupon = null;
+        $output = $this->receipt->total($input, $coupon);
         $this->assertEquals(
             15,
+            $output,
+            'Total sum should be 15'
+        );
+    }
+
+    public function testTotalAndCoupon()
+    {
+        $input = [0, 2, 5, 8];
+        $coupon = 0.20;
+        $output = $this->receipt->total($input, $coupon);
+        $this->assertEquals(
+            12,
             $output,
             'Total sum should be 15'
         );
