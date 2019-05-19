@@ -7,6 +7,8 @@ use App\Receipt;
 
 class ReceiptTest extends TestCase
 {
+    protected $receipt;
+
     public function setUp(): void
     {
         $this->receipt = new Receipt;
