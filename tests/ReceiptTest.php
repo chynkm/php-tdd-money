@@ -11,7 +11,15 @@ class ReceiptTest extends TestCase
 
     public function setUp(): void
     {
-        $this->receipt = new Receipt;
+        $this->formatter = $this->getMockBuilder('App\Formatter')
+            ->setMethods(['currencyAmt'])
+            ->getMock();
+        $this->formatter->expects($this->any())
+            ->method('currencyAmt')
+            ->with($this->anything())
+            ->will($this->returnArgument(0));
+
+        $this->receipt = new Receipt($this->formatter);
     }
 
     public function tearDown(): void
@@ -20,12 +28,12 @@ class ReceiptTest extends TestCase
     }
 
     /**
-     * @dataProvider provideTotal
+     * @dataProvider provideSubTotal
      */
-    public function testTotal($items, $expected)
+    public function testSubTotal($items, $expected)
     {
         $coupon = null;
-        $output = $this->receipt->total($items, $coupon);
+        $output = $this->receipt->subTotal($items, $coupon);
         $this->assertEquals(
             $expected,
             $output,
@@ -33,7 +41,7 @@ class ReceiptTest extends TestCase
         );
     }
 
-    public function provideTotal()
+    public function provideSubTotal()
     {
         return [
             [[1, 2, 5, 8], 16],
@@ -42,11 +50,11 @@ class ReceiptTest extends TestCase
         ];
     }
 
-    public function testTotalAndCoupon()
+    public function testSubTotalAndCoupon()
     {
         $input = [0, 2, 5, 8];
         $coupon = 0.20;
-        $output = $this->receipt->total($input, $coupon);
+        $output = $this->receipt->subTotal($input, $coupon);
         $this->assertEquals(
             12,
             $output,
@@ -54,12 +62,12 @@ class ReceiptTest extends TestCase
         );
     }
 
-    public function testTotalException()
+    public function testSubTotalException()
     {
         $input = [0, 2, 5, 8];
         $coupon = 1.20;
         $this->expectException('BadMethodCallException');
-        $this->receipt->total($input, $coupon);
+        $this->receipt->subTotal($input, $coupon);
     }
 
     public function testPostTaxTotal()
@@ -68,55 +76,34 @@ class ReceiptTest extends TestCase
         $tax = 0.20;
         $coupon = null;
         $receipt = $this->getMockBuilder('App\Receipt')
-            ->setMethods(['tax', 'total'])
+            ->setMethods(['tax', 'subTotal'])
+            ->setConstructorArgs([$this->formatter])
             ->getMock();
 
-        $receipt->expects($this->once()) // expects to call the total() methods once
-            ->method('total')
+        $receipt->expects($this->once()) // expects to call the subTotal() methods once
+            ->method('subTotal')
             ->with($items, $coupon)
             ->will($this->returnValue(10.00));
 
         $receipt->expects($this->once())
             ->method('tax')
-            ->with(10.00, $tax)
+            ->with(10.00)
             ->will($this->returnValue(1.00));
 
-        $result = $receipt->postTaxTotal([1, 2, 5, 8], 0.20, null);
+        $result = $receipt->postTaxTotal([1, 2, 5, 8], null);
         $this->assertEquals(11.00, $result);
     }
 
     public function testTax()
     {
         $inputAmount = 10.00;
-        $taxInput = 0.10;
+        $this->receipt->tax = 0.10;
 
-        $output = $this->receipt->tax($inputAmount, $taxInput);
+        $output = $this->receipt->tax($inputAmount);
         $this->assertEquals(
             1.00,
             $output,
             'tax calculate = 1.00'
         );
-    }
-
-    /**
-     * @dataProvider provideCurrencyAmt
-     */
-    public function testCurrencyAmount($input, $expected, $msg)
-    {
-        $this->assertSame(
-            $expected,
-            $this->receipt->currencyAmt($input),
-            $msg
-        );
-    }
-
-    public function provideCurrencyAmt()
-    {
-        return [
-            [1, 1.00, '1 should be 1.00'],
-            [1.1, 1.10, '1.1 should be 1.10'],
-            [1.11, 1.11, '1.11 should be 1.11'],
-            [1.111, 1.11, '1.111 should be 1.11'],
-        ];
     }
 }
